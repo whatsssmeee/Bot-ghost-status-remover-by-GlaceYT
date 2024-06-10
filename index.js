@@ -35,7 +35,7 @@ app.listen(port, () => {
   console.log(`🔗 Powered By Rafael's Counting Maker`);
 });
 
-const statusMessages = ["Jugando Emergency Response Liberty County", "Codigo : Peru", "Administrando a Unbelievaboat, correctamente."];
+const statusMessages = ["Playing Roblox.", "10+ APIs", "Thinking Curved"];
 let currentIndex = 0;
 const channelId = '';  // Add your channel ID here
 
