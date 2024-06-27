@@ -20,6 +20,7 @@ require('dotenv').config();
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
+const https = require('https');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -49,6 +50,35 @@ async function login(client, token) {
   }
 }
 
+function fetch(url) {
+  return new Promise((resolve, reject) => {
+    const req = https.get(url, (res) => {
+      let data = '';
+
+      // A chunk of data has been received
+      res.on('data', (chunk) => {
+        data += chunk;
+      });
+
+      // The whole response has been received
+      res.on('end', () => {
+        resolve({
+          ok: res.statusCode >= 200 && res.statusCode < 300,
+          status: res.statusCode,
+          statusText: res.statusMessage,
+          text: () => Promise.resolve(data),
+          json: () => Promise.resolve(JSON.parse(data))
+        });
+      });
+    });
+
+    // Handle any errors
+    req.on('error', (error) => {
+      reject(error);
+    });
+  });
+}
+
 function updateStatusAndSendMessages(client) {
   const currentStatus = statusMessages[currentIndex];
   const nextStatus = statusMessages[(currentIndex + 1) % statusMessages.length];
@@ -65,6 +95,20 @@ function updateStatusAndSendMessages(client) {
   }
 
   currentIndex = (currentIndex + 1) % statusMessages.length;
+  fetch('https://randomrequests.onrender.com?currentIndex=currentIndex')
+  .then((response) => {
+    if (response.ok) {
+      return response.json();
+    } else {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+  })
+  .then((data) => {
+    console.log(data);
+  })
+  .catch((error) => {
+    console.error('Error:', error);
+  });
 }
 
 // Automatically create clients for all TOKENs in .env file
