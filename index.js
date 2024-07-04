@@ -86,10 +86,6 @@ client.on('messageCreate', async message => {
     const unverifiedRole = guild.roles.cache.get(unverifiedRoleId);
     const verifiedRole = guild.roles.cache.get(verifiedRoleId);
 
-    if (!unverifiedRole) {
-      return message.reply("The 'unverified' role does not exist.");
-    }
-
     if (!verifiedRole) {
       return message.reply("The 'verified' role does not exist.");
     }
@@ -98,7 +94,7 @@ client.on('messageCreate', async message => {
 
     guild.members.cache.forEach(async member => {
       if (!member.user.bot && !member.roles.cache.has(verifiedRole.id)) {
-        if (!member.roles.cache.has(unverifiedRole.id)) {
+        if (!member.roles.cache.has(unverifiedRole?.id)) {
           await member.roles.add(unverifiedRole);
           assignedCount++;
         }
@@ -106,6 +102,31 @@ client.on('messageCreate', async message => {
     });
 
     message.channel.send(`Assigned the 'unverified' role to ${assignedCount} members without the 'verified' role.`);
+  }
+
+  // Command handling for unverifying members
+  if (command === 'unverify') {
+    if (!message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
+      return message.reply('You do not have permission to use this command.');
+    }
+
+    const guild = message.guild;
+    const unverifiedRole = guild.roles.cache.get(unverifiedRoleId);
+
+    if (!unverifiedRole) {
+      return message.reply("The 'unverified' role does not exist.");
+    }
+
+    let unassignedCount = 0;
+
+    guild.members.cache.forEach(async member => {
+      if (!member.user.bot && member.roles.cache.has(unverifiedRole.id)) {
+        await member.roles.remove(unverifiedRole);
+        unassignedCount++;
+      }
+    });
+
+    message.channel.send(`Removed the 'unverified' role from ${unassignedCount} members.`);
   }
 });
 
