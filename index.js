@@ -21,6 +21,7 @@ app.listen(port, () => {
 
 const statusMessage = "Bot made by Requited";
 const channelId = '';  // Set your channel ID if you want to send messages to a specific channel
+const prefix = '!';  // Set your custom prefix here
 
 async function login() {
   try {
@@ -48,6 +49,22 @@ client.once('ready', () => {
   }
 
   logToRenderHost(`Bot is ready and status set to: ${statusMessage}`);
+});
+
+client.on('messageCreate', message => {
+  if (!message.content.startsWith(prefix) || message.author.bot) return;
+
+  const args = message.content.slice(prefix.length).trim().split(/ +/);
+  const command = args.shift().toLowerCase();
+
+  if (command === 'ping') {
+    message.channel.send('Pong!');
+  } else if (command === 'status') {
+    message.channel.send(`Current status is: ${statusMessage}`);
+  } else if (command === 'help') {
+    message.channel.send(`Available commands: ${prefix}ping, ${prefix}status, ${prefix}help`);
+  }
+  // Add more commands as needed
 });
 
 function logToRenderHost(message) {
