@@ -1,13 +1,15 @@
 const { Client, GatewayIntentBits, ActivityType, TextChannel } = require('discord.js');
 require('dotenv').config();
 const express = require('express');
+const fs = require('fs');
+const path = require('path');
 const client = new Client({
   intents: Object.keys(GatewayIntentBits).map((a) => {
     return GatewayIntentBits[a];
   }),
 });
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 app.get('/', (req, res) => {
   res.send('YaY Your Bot Status Changed✨');
@@ -44,6 +46,15 @@ client.once('ready', () => {
   if (textChannel instanceof TextChannel) {
     textChannel.send(`Bot status is: ${statusMessage}`);
   }
+
+  logToRenderHost(`Bot is ready and status set to: ${statusMessage}`);
 });
+
+function logToRenderHost(message) {
+  const logMessage = `[${new Date().toISOString()}] ${message}\n`;
+  fs.appendFile(path.join(__dirname, 'logs.txt'), logMessage, (err) => {
+    if (err) console.error('Failed to log message to render host:', err);
+  });
+}
 
 login();
