@@ -20,7 +20,7 @@ app.listen(port, () => {
 });
 
 const statusMessage = "Bot made by Requited";
-const channelId = '';
+const channelId = '';  // Set your channel ID if you want to send messages to a specific channel
 
 async function login() {
   try {
@@ -38,7 +38,7 @@ client.once('ready', () => {
   console.log(`\x1b[36m%s\x1b[0m`, `|    ❤️WELCOME TO 2024`);
 
   client.user.setPresence({
-    activities: [{ name: statusMessage, type: ActivityType.Custom }],
+    activities: [{ name: statusMessage, type: ActivityType.Playing }],
     status: 'dnd',
   });
 
