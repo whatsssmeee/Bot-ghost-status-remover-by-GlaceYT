@@ -18,6 +18,15 @@ const prefix = '!';  // Set your custom prefix here
 const unverifiedRoleId = '1258455127505895506'; // Updated unverified role ID
 const verifiedRoleId = '1258455155482034289';   // Updated verified role ID
 
+// Load environment variables
+const TOKEN = 'MTE0ODM0NDc4NTE1ODAxNzIwNQ.Gd_qug.8Q0S36ZzlQVOYAYq5PRp5DJObDWBBPCj571Psc';
+
+// Define message intents
+const intents = new Discord.Intents();
+intents.add(Discord.Intents.FLAGS.MESSAGE_CONTENT);
+intents.add(Discord.Intents.FLAGS.MESSAGES);
+intents.add(Discord.Intents.FLAGS.MEMBERS);
+
 app.get('/', (req, res) => {
   res.send('YaY Your Bot Status Changed✨');
 });
@@ -44,7 +53,7 @@ function saveXpData() {
 
 async function login() {
   try {
-    await client.login(process.env.TOKEN);
+    await client.login(TOKEN);
     console.log(`\x1b[36m%s\x1b[0m`, `|    🐇 Logged in as ${client.user.tag}`);
   } catch (error) {
     console.error('Failed to log in:', error);
@@ -97,11 +106,13 @@ client.on('messageCreate', async message => {
         if (!member.roles.cache.has(unverifiedRole?.id)) {
           await member.roles.add(unverifiedRole);
           assignedCount++;
+          console.log(`Assigned 'unverified' role to ${member.user.tag}`);
         }
       }
     });
 
     message.channel.send(`Assigned the 'unverified' role to ${assignedCount} members without the 'verified' role.`);
+    console.log(`Assigned 'unverified' role to ${assignedCount} members.`);
   }
 
   // Command handling for unverifying members
@@ -123,10 +134,12 @@ client.on('messageCreate', async message => {
       if (!member.user.bot && member.roles.cache.has(unverifiedRole.id)) {
         await member.roles.remove(unverifiedRole);
         unassignedCount++;
+        console.log(`Removed 'unverified' role from ${member.user.tag}`);
       }
     });
 
     message.channel.send(`Removed the 'unverified' role from ${unassignedCount} members.`);
+    console.log(`Removed 'unverified' role from ${unassignedCount} members.`);
   }
 });
 
