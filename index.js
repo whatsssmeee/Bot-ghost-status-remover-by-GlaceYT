@@ -14,6 +14,10 @@ const client = new Client({
 const app = express();
 const port = process.env.PORT || 3000;
 
+const prefix = '!';  // Set your custom prefix here
+const unverifiedRoleId = '1258455127505895506'; // Updated unverified role ID
+const verifiedRoleId = '1258455155482034289';   // Updated verified role ID
+
 app.get('/', (req, res) => {
   res.send('YaY Your Bot Status Changed✨');
 });
@@ -24,9 +28,6 @@ app.listen(port, () => {
 
 const statusMessage = "Bot made by Requited";
 const channelId = '';  // Set your channel ID if you want to send messages to a specific channel
-
-const UNVERIFIED_ROLE_ID = '1256969904670769232'; // Replace with your unverified role ID
-const VERIFIED_ROLE_ID = '1256969981472800874';   // Replace with your verified role ID
 
 const xpCooldowns = new Set();
 const xpFilePath = path.join(__dirname, 'xp.json');
@@ -70,17 +71,20 @@ client.once('ready', () => {
 });
 
 client.on('messageCreate', async message => {
-  if (message.author.bot) return;
+  if (message.author.bot || !message.content.startsWith(prefix)) return;
+
+  const args = message.content.slice(prefix.length).trim().split(/ +/);
+  const command = args.shift().toLowerCase();
 
   // Command handling
-  if (message.content.startsWith('!verify')) {
+  if (command === 'verify') {
     if (!message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
       return message.reply('You do not have permission to use this command.');
     }
 
     const guild = message.guild;
-    const unverifiedRole = guild.roles.cache.get(UNVERIFIED_ROLE_ID);
-    const verifiedRole = guild.roles.cache.get(VERIFIED_ROLE_ID);
+    const unverifiedRole = guild.roles.cache.get(unverifiedRoleId);
+    const verifiedRole = guild.roles.cache.get(verifiedRoleId);
 
     if (!unverifiedRole) {
       return message.reply("The 'unverified' role does not exist.");
