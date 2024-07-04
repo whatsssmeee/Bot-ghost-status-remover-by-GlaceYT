@@ -18,9 +18,6 @@ const prefix = '!';  // Set your custom prefix here
 const unverifiedRoleId = '1258455127505895506'; // Updated unverified role ID
 const verifiedRoleId = '1258455155482034289';   // Updated verified role ID
 
-// Load environment variables
-const TOKEN = 'MTE0ODM0NDc4NTE1ODAxNzIwNQ.Gd_qug.8Q0S36ZzlQVOYAYq5PRp5DJObDWBBPCj571Psc';
-
 // Define message intents
 const intents = new Discord.Intents();
 intents.add(Discord.Intents.FLAGS.MESSAGE_CONTENT);
@@ -53,7 +50,7 @@ function saveXpData() {
 
 async function login() {
   try {
-    await client.login(TOKEN);
+    await client.login(process.env.TOKEN);
     console.log(`\x1b[36m%s\x1b[0m`, `|    🐇 Logged in as ${client.user.tag}`);
   } catch (error) {
     console.error('Failed to log in:', error);
