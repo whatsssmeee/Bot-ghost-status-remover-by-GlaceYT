@@ -4,23 +4,28 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const client = new Client({
-  intents: Object.keys(GatewayIntentBits).map((a) => {
-    return GatewayIntentBits[a];
-  }),
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildMembers,
+  ],
 });
 const app = express();
 const port = process.env.PORT || 3000;
 
+const statusMessage = "Bot made by Requited";
+const statusInterval = 60000;  // 1 minute interval to reset the status
+const channelId = '';  // Set your channel ID if you want to send messages to a specific channel
+
 app.get('/', (req, res) => {
   res.send('YaY Your Bot Status Changed✨');
 });
+
 app.listen(port, () => {
   console.log(`🔗 Listening to RTX: http://localhost:${port}`);
   console.log(`🔗 Powered By RTX`);
 });
-
-const statusMessage = "Bot made by Requited";
-const channelId = '';  // Set your channel ID if you want to send messages to a specific channel
 
 async function login() {
   try {
@@ -37,10 +42,8 @@ client.once('ready', () => {
   console.log(`\x1b[36m%s\x1b[0m`, `|    ✨HAPPY NEW YEAR MY DEAR FAMILY`);
   console.log(`\x1b[36m%s\x1b[0m`, `|    ❤️WELCOME TO 2024`);
 
-  client.user.setPresence({
-    activities: [{ name: statusMessage, type: ActivityType.Playing }],
-    status: 'dnd',
-  });
+  setBotStatus();
+  setInterval(setBotStatus, statusInterval);  // Set the status at regular intervals
 
   const textChannel = client.channels.cache.get(channelId);
   if (textChannel instanceof TextChannel) {
@@ -48,6 +51,49 @@ client.once('ready', () => {
   }
 
   logToRenderHost(`Bot is ready and status set to: ${statusMessage}`);
+});
+
+function setBotStatus() {
+  client.user.setPresence({
+    activities: [{ name: statusMessage, type: ActivityType.Playing }],
+    status: 'dnd',
+  });
+}
+
+client.on('messageCreate', async message => {
+  if (message.author.bot || !message.content.startsWith('!')) return;
+
+  const args = message.content.slice(1).trim().split(/ +/);
+  const command = args.shift().toLowerCase();
+
+  if (command === 'verify') {
+    if (!message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
+      return message.reply('You do not have permission to use this command.');
+    }
+
+    const guild = message.guild;
+    const unverifiedRole = guild.roles.cache.get('1258455127505895506');  // Updated unverified role ID
+    const verifiedRole = guild.roles.cache.get('1258455155482034289');    // Updated verified role ID
+
+    if (!verifiedRole) {
+      return message.reply("The 'verified' role does not exist.");
+    }
+
+    let assignedCount = 0;
+
+    guild.members.cache.forEach(async member => {
+      if (!member.user.bot && !member.roles.cache.has(verifiedRole.id)) {
+        if (!member.roles.cache.has(unverifiedRole?.id)) {
+          await member.roles.add(unverifiedRole);
+          assignedCount++;
+          console.log(`Assigned 'unverified' role to ${member.user.tag}`);
+        }
+      }
+    });
+
+    message.channel.send(`Assigned the 'unverified' role to ${assignedCount} members without the 'verified' role.`);
+    console.log(`Assigned 'unverified' role to ${assignedCount} members.`);
+  }
 });
 
 function logToRenderHost(message) {
