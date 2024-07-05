@@ -13,8 +13,6 @@
  * **********************************************
  */
 
-
-
 const { Client, GatewayIntentBits, ActivityType, TextChannel } = require('discord.js');
 require('dotenv').config();
 const express = require('express');
@@ -35,12 +33,9 @@ app.listen(port, () => {
   console.log(`🔗 Powered By RTX`);
 });
 
-
-const statusMessages = ["PLAYING","MUSIC"];
-
-
+const statusMessages = ["Made by Requited", "Free the guys!"];
 let currentIndex = 0;
-const channelId = '';
+const channelId = '';  // Set your channel ID if you want to send messages to a specific channel
 
 async function login() {
   try {
@@ -67,24 +62,21 @@ GIT : https://github.com/RTX-GAMINGG/Bot-ghost-status-remover-by-RTX
  * **********************************************
  */
 
-
 function updateStatusAndSendMessages() {
   const currentStatus = statusMessages[currentIndex];
   const nextStatus = statusMessages[(currentIndex + 1) % statusMessages.length];
 
   client.user.setPresence({
-    activities: [{ name: currentStatus, type: ActivityType.Custom}],
+    activities: [{ name: currentStatus, type: ActivityType.Custom }],
     status: 'dnd',
   });
 
-  
   const textChannel = client.channels.cache.get(channelId);
 
   if (textChannel instanceof TextChannel) {
-   
     textChannel.send(`Bot status is: ${currentStatus}`);
   } else {
-
+    console.log(`Status set to: ${currentStatus}`);
   }
 
   currentIndex = (currentIndex + 1) % statusMessages.length;
@@ -98,7 +90,7 @@ client.once('ready', () => {
 
   setInterval(() => {
     updateStatusAndSendMessages();
-  }, 10000);
+  }, 10000); // Update status every 10 seconds
 });
 
 login();
