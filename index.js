@@ -13,18 +13,15 @@
  * **********************************************
  */
 
-const { Client, GatewayIntentBits, ActivityType } = require('discord.js');
+const { Client, GatewayIntentBits, ActivityType, TextChannel } = require('discord.js');
 require('dotenv').config();
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const client = new Client({
-  intents: [
-    GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent,
-    GatewayIntentBits.GuildPresences
-  ],
+  intents: Object.keys(GatewayIntentBits).map((a) => {
+    return GatewayIntentBits[a];
+  }),
 });
 const app = express();
 const port = 3000;
@@ -38,15 +35,49 @@ app.listen(port, () => {
 
 const statusMessages = ["Made by Requited", "Free the guys!"];
 let currentIndex = 0;
+const channelId = '';  // Set your channel ID if you want to send messages to a specific channel
+
+async function login() {
+  try {
+    await client.login();
+    console.log(`\x1b[36m%s\x1b[0m`, `|    🐇 Logged in as ${client.user.tag}`);
+  } catch (error) {
+    console.error('Failed to log in:', error);
+    process.exit(1);
+  }
+}
+
+/**
+ ██████╗░████████╗██╗░░██╗           
+ ██╔══██╗╚══██╔══╝╚██╗██╔╝          
+ ██████╔╝░░░██║░░░░╚███╔╝░          
+ ██╔══██╗░░░██║░░░░██╔██╗░          
+ ██║░░██║░░░██║░░░██╔╝╚██╗          
+ ╚═╝░░╚═╝░░░╚═╝░░░╚═╝░░╚═╝          
+GIT : https://github.com/RTX-GAMINGG/Bot-ghost-status-remover-by-RTX
+  DISCORD SERVER : https://discord.gg/FUEHs7RCqz
+  YOUTUBE : https://www.youtube.com/channel/UCPbAvYWBgnYhliJa1BIrv0A
+ * **********************************************
+ *   Code by RTX GAMING
+ * **********************************************
+ */
 
 function updateStatusAndSendMessages() {
   const currentStatus = statusMessages[currentIndex];
+  const nextStatus = statusMessages[(currentIndex + 1) % statusMessages.length];
 
   client.user.setPresence({
-    activities: [{ name: currentStatus, type: ActivityType.Playing }],
-    status: 'online'
-  }).then(() => console.log(`Presence set to: Playing ${currentStatus}`))
-    .catch(console.error);
+    activities: [{ name: currentStatus, type: ActivityType.Watching }],
+    status: 'online',
+  });
+
+  const textChannel = client.channels.cache.get(channelId);
+
+  if (textChannel instanceof TextChannel) {
+    textChannel.send(`Bot status is: ${currentStatus}`);
+  } else {
+    console.log(`Status set to: ${currentStatus}`);
+  }
 
   currentIndex = (currentIndex + 1) % statusMessages.length;
 }
