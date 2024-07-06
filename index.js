@@ -33,7 +33,7 @@ async function login() {
 }
 
 function updateStatusAndSendMessages() {
-  const currentStatus = statusMessages[currentIndex];
+  const currentStatus = `Playing a game: ${statusMessages[currentIndex]}`;
 
   client.user.setPresence({
     activities: [{ name: currentStatus, type: 'PLAYING' }],
@@ -59,7 +59,7 @@ client.once('ready', () => {
 
   setInterval(() => {
     updateStatusAndSendMessages();
-  }, 20000); // Update status every 20 seconds
+  }, 10000); // Update status every 10 seconds
 });
 
 login();
