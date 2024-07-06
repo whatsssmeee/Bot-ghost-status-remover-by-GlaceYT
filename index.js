@@ -33,7 +33,7 @@ app.listen(port, () => {
   console.log(`🔗 Powered By RTX`);
 });
 
-const statusMessages = ["Made by Requited", "Free the guys!"];
+const statusMessages = ["/help", "Free the guys!"];
 let currentIndex = 0;
 const channelId = '';  // Set your channel ID if you want to send messages to a specific channel
 
@@ -67,7 +67,7 @@ function updateStatusAndSendMessages() {
   const nextStatus = statusMessages[(currentIndex + 1) % statusMessages.length];
 
   client.user.setPresence({
-    activities: [{ name: currentStatus, type: ActivityType.Custom }],
+    activities: [{ name: currentStatus, type: ActivityType.'PLAYING' }],
     status: 'dnd',
   });
 
