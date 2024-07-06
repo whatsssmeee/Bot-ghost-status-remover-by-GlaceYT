@@ -1,3 +1,18 @@
+/**
+ ██████╗░████████╗██╗░░██╗           
+ ██╔══██╗╚══██╔══╝╚██╗██╔╝          
+ ██████╔╝░░░██║░░░░╚███╔╝░          
+ ██╔══██╗░░░██║░░░░██╔██╗░          
+ ██║░░██║░░░██║░░░██╔╝╚██╗          
+ ╚═╝░░╚═╝░░░╚═╝░░░╚═╝░░╚═╝          
+  GIT : https://github.com/RTX-GAMINGG/Bot-ghost-status-remover-by-RTX
+  DISCORD SERVER : https://discord.gg/FUEHs7RCqz
+  YOUTUBE : https://www.youtube.com/channel/UCPbAvYWBgnYhliJa1BIrv0A
+ * **********************************************
+ *   Code by RTX GAMING
+ * **********************************************
+ */
+
 const { Client, GatewayIntentBits, ActivityType, TextChannel } = require('discord.js');
 require('dotenv').config();
 const express = require('express');
@@ -32,12 +47,28 @@ async function login() {
   }
 }
 
+/**
+ ██████╗░████████╗██╗░░██╗           
+ ██╔══██╗╚══██╔══╝╚██╗██╔╝          
+ ██████╔╝░░░██║░░░░╚███╔╝░          
+ ██╔══██╗░░░██║░░░░██╔██╗░          
+ ██║░░██║░░░██║░░░██╔╝╚██╗          
+ ╚═╝░░╚═╝░░░╚═╝░░░╚═╝░░╚═╝          
+GIT : https://github.com/RTX-GAMINGG/Bot-ghost-status-remover-by-RTX
+  DISCORD SERVER : https://discord.gg/FUEHs7RCqz
+  YOUTUBE : https://www.youtube.com/channel/UCPbAvYWBgnYhliJa1BIrv0A
+ * **********************************************
+ *   Code by RTX GAMING
+ * **********************************************
+ */
+
 function updateStatusAndSendMessages() {
-  const currentStatus = `Playing ${statusMessages[currentIndex]}`;
+  const currentStatus = statusMessages[currentIndex];
+  const nextStatus = statusMessages[(currentIndex + 1) % statusMessages.length];
 
   client.user.setPresence({
-    activities: [{ name: currentStatus, type: 'PLAYING' }],
-    status: 'online', // Setting the status to online
+    activities: [{ name: currentStatus, type: ActivityType.Custom }],
+    status: 'dnd',
   });
 
   const textChannel = client.channels.cache.get(channelId);
@@ -63,3 +94,18 @@ client.once('ready', () => {
 });
 
 login();
+
+/**
+ ██████╗░████████╗██╗░░██╗           
+ ██╔══██╗╚══██╔══╝╚██╗██╔╝          
+ ██████╔╝░░░██║░░░░╚███╔╝░          
+ ██╔══██╗░░░██║░░░░██╔██╗░          
+ ██║░░██║░░░██║░░░██╔╝╚██╗          
+ ╚═╝░░╚═╝░░░╚═╝░░░╚═╝░░╚═╝          
+GIT : https://github.com/RTX-GAMINGG/Bot-ghost-status-remover-by-RTX
+  DISCORD SERVER : https://discord.gg/FUEHs7RCqz
+  YOUTUBE : https://www.youtube.com/channel/UCPbAvYWBgnYhliJa1BIrv0A
+ * **********************************************
+ *   Code by RTX GAMING
+ * **********************************************
+ */
