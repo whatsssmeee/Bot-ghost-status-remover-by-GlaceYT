@@ -33,7 +33,7 @@ async function login() {
 }
 
 function updateStatusAndSendMessages() {
-  const currentStatus = `Playing a game: ${statusMessages[currentIndex]}`;
+  const currentStatus = `Playing: ${statusMessages[currentIndex]}`;
 
   client.user.setPresence({
     activities: [{ name: currentStatus, type: 'PLAYING' }],
