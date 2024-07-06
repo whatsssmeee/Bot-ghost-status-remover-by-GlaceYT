@@ -14,6 +14,7 @@
  */
 
 const { Client, GatewayIntentBits, ActivityType, TextChannel } = require('discord.js');
+require('dotenv').config();
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
@@ -38,7 +39,7 @@ const channelId = '';  // Set your channel ID if you want to send messages to a 
 
 async function login() {
   try {
-    await client.login(); // Ensure your token is set correctly in the host environment
+    await client.login(process.env.TOKEN);
     console.log(`\x1b[36m%s\x1b[0m`, `|    🐇 Logged in as ${client.user.tag}`);
   } catch (error) {
     console.error('Failed to log in:', error);
