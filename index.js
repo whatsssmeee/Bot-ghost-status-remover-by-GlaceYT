@@ -1,26 +1,67 @@
-import discord
-from discord.ext import commands
-import os
+/**
+ ██████╗░████████╗██╗░░██╗           
+ ██╔══██╗╚══██╔══╝╚██╗██╔╝          
+ ██████╔╝░░░██║░░░░╚███╔╝░          
+ ██╔══██╗░░░██║░░░░██╔██╗░          
+ ██║░░██║░░░██║░░░██╔╝╚██╗          
+ ╚═╝░░╚═╝░░░╚═╝░░░╚═╝░░╚═╝          
+  GIT : https://github.com/RTX-GAMINGG/Bot-ghost-status-remover-by-RTX
+  DISCORD SERVER : https://discord.gg/FUEHs7RCqz
+  YOUTUBE : https://www.youtube.com/channel/UCPbAvYWBgnYhliJa1BIrv0A
+ * **********************************************
+ *   Code by RTX GAMING
+ * **********************************************
+ */
 
-TOKEN = os.getenv('DISCORD_TOKEN')
+const { Client, GatewayIntentBits, TextChannel } = require('discord.js');
+require('dotenv').config();
+const client = new Client({
+  intents: Object.keys(GatewayIntentBits).map((a) => GatewayIntentBits[a]),
+});
 
-intents = discord.Intents.default()
-intents.bans = True  # Enable ban-related events and permissions
+async function login() {
+  try {
+    await client.login(process.env.DISCORD_TOKEN);
+    console.log(`Logged in as ${client.user.tag}`);
+  } catch (error) {
+    console.error('Failed to log in:', error);
+    process.exit(1);
+  }
+}
 
-bot = commands.Bot(command_prefix='!', intents=intents)
+client.on('ready', () => {
+  console.log(`Bot is ready as ${client.user.tag}`);
+});
 
-@bot.event
-async def on_ready():
-    print(f'Logged in as {bot.user}')
+client.on('messageCreate', async (message) => {
+  if (message.content.toLowerCase() === '!unban_all' && message.member.permissions.has('BAN_MEMBERS')) {
+    try {
+      const bans = await message.guild.bans.fetch();
+      bans.forEach(async (banEntry) => {
+        await message.guild.bans.remove(banEntry.user.id);
+        message.channel.send(`Unbanned ${banEntry.user.tag}`);
+      });
+      message.channel.send('Unbanned all users.');
+    } catch (error) {
+      console.error('Error unbanning:', error);
+      message.channel.send('Failed to unban users.');
+    }
+  }
+});
 
-@bot.command()
-@commands.has_permissions(administrator=True)
-async def unban_all(ctx):
-    bans = await ctx.guild.bans()
-    for ban_entry in bans:
-        user = ban_entry.user
-        await ctx.guild.unban(user)
-        await ctx.send(f'Unbanned {user.name}#{user.discriminator}')
-    await ctx.send('Unbanned all users.')
+login();
 
-bot.run(TOKEN)
+/**
+ ██████╗░████████╗██╗░░██╗           
+ ██╔══██╗╚══██╔══╝╚██╗██╔╝          
+ ██████╔╝░░░██║░░░░╚███╔╝░          
+ ██╔══██╗░░░██║░░░░██╔██╗░          
+ ██║░░██║░░░██║░░░██╔╝╚██╗          
+ ╚═╝░░╚═╝░░░╚═╝░░░╚═╝░░╚═╝          
+GIT : https://github.com/RTX-GAMINGG/Bot-ghost-status-remover-by-RTX
+  DISCORD SERVER : https://discord.gg/FUEHs7RCqz
+  YOUTUBE : https://www.youtube.com/channel/UCPbAvYWBgnYhliJa1BIrv0A
+ * **********************************************
+ *   Code by RTX GAMING
+ * **********************************************
+ */
