@@ -1,37 +1,111 @@
-const discord = require('discord.js');
-const { Client, Intents } = discord;
+/**
+ ██████╗░████████╗██╗░░██╗           
+ ██╔══██╗╚══██╔══╝╚██╗██╔╝          
+ ██████╔╝░░░██║░░░░╚███╔╝░          
+ ██╔══██╗░░░██║░░░░██╔██╗░          
+ ██║░░██║░░░██║░░░██╔╝╚██╗          
+ ╚═╝░░╚═╝░░░╚═╝░░░╚═╝░░╚═╝          
+  GIT : https://github.com/RTX-GAMINGG/Bot-ghost-status-remover-by-RTX
+  DISCORD SERVER : https://discord.gg/FUEHs7RCqz
+  YOUTUBE : https://www.youtube.com/channel/UCPbAvYWBgnYhliJa1BIrv0A
+ * **********************************************
+ *   Code by RTX GAMING
+ * **********************************************
+ */
+
+const { Client, GatewayIntentBits, ActivityType, TextChannel } = require('discord.js');
 require('dotenv').config();
-
-const bot = new Client({
-  intents: [
-    Intents.FLAGS.GUILDS,
-    Intents.FLAGS.GUILD_MEMBERS,
-    Intents.FLAGS.GUILD_BANS,
-    Intents.FLAGS.GUILD_MESSAGES
-    // Add other intents as needed
-  ]
+const express = require('express');
+const fs = require('fs');
+const path = require('path');
+const client = new Client({
+  intents: Object.keys(GatewayIntentBits).map((a) => {
+    return GatewayIntentBits[a];
+  }),
+});
+const app = express();
+const port = 3000;
+app.get('/', (req, res) => {
+  res.send('YaY Your Bot Status Changed✨');
+});
+app.listen(port, () => {
+  console.log(🔗 Listening to RTX: http://localhost:${port});
+  console.log(🔗 Powered By RTX);
 });
 
-bot.on('ready', () => {
-  console.log(`Logged in as ${bot.user.tag}`);
-});
+const statusMessages = ["Playing /help", "Free the guys!"];
+let currentIndex = 0;
+const channelId = '';  // Set your channel ID if you want to send messages to a specific channel
 
-bot.on('messageCreate', async (message) => {
-  if (message.content.toLowerCase() === '!unban_all' && message.member.permissions.has('BAN_MEMBERS')) {
-    try {
-      const bans = await message.guild.bans.fetch();
-      bans.forEach(async (banEntry) => {
-        await message.guild.bans.remove(banEntry.user.id);
-        message.channel.send(`Unbanned ${banEntry.user.tag}`);
-      });
-      message.channel.send('Unbanned all users.');
-    } catch (error) {
-      console.error('Error unbanning:', error);
-      message.channel.send('Failed to unban users.');
-    }
+async function login() {
+  try {
+    await client.login(process.env.TOKEN);
+    console.log(\x1b[36m%s\x1b[0m, |    🐇 Logged in as ${client.user.tag});
+  } catch (error) {
+    console.error('Failed to log in:', error);
+    process.exit(1);
   }
+}
+
+/**
+ ██████╗░████████╗██╗░░██╗           
+ ██╔══██╗╚══██╔══╝╚██╗██╔╝          
+ ██████╔╝░░░██║░░░░╚███╔╝░          
+ ██╔══██╗░░░██║░░░░██╔██╗░          
+ ██║░░██║░░░██║░░░██╔╝╚██╗          
+ ╚═╝░░╚═╝░░░╚═╝░░░╚═╝░░╚═╝          
+GIT : https://github.com/RTX-GAMINGG/Bot-ghost-status-remover-by-RTX
+  DISCORD SERVER : https://discord.gg/FUEHs7RCqz
+  YOUTUBE : https://www.youtube.com/channel/UCPbAvYWBgnYhliJa1BIrv0A
+ * **********************************************
+ *   Code by RTX GAMING
+ * **********************************************
+ */
+
+function updateStatusAndSendMessages() {
+  const currentStatus = statusMessages[currentIndex];
+  const nextStatus = statusMessages[(currentIndex + 1) % statusMessages.length];
+
+  client.user.setPresence({
+    activities: [{ name: currentStatus, type: ActivityType.Custom }],
+    status: 'dnd',
+  });
+
+  const textChannel = client.channels.cache.get(channelId);
+
+  if (textChannel instanceof TextChannel) {
+    textChannel.send(Bot status is: ${currentStatus});
+  } else {
+    console.log(Status set to: ${currentStatus});
+  }
+
+  currentIndex = (currentIndex + 1) % statusMessages.length;
+}
+
+client.once('ready', () => {
+  console.log(\x1b[36m%s\x1b[0m, |    ✅ Bot is ready as ${client.user.tag});
+  console.log(\x1b[36m%s\x1b[0m, |    ✨HAPPY NEW YEAR MY DEAR FAMILY);
+  console.log(\x1b[36m%s\x1b[0m, |    ❤️WELCOME TO 2024);
+  updateStatusAndSendMessages();
+
+  setInterval(() => {
+    updateStatusAndSendMessages();
+  }, 10000); // Update status every 10 seconds
 });
 
-bot.login(process.env.DISCORD_TOKEN)
-  .then(() => console.log('Bot is connected.'))
-  .catch(error => console.error('Error connecting bot:', error));
+login();
+
+/**
+ ██████╗░████████╗██╗░░██╗           
+ ██╔══██╗╚══██╔══╝╚██╗██╔╝          
+ ██████╔╝░░░██║░░░░╚███╔╝░          
+ ██╔══██╗░░░██║░░░░██╔██╗░          
+ ██║░░██║░░░██║░░░██╔╝╚██╗          
+ ╚═╝░░╚═╝░░░╚═╝░░░╚═╝░░╚═╝          
+GIT : https://github.com/RTX-GAMINGG/Bot-ghost-status-remover-by-RTX
+  DISCORD SERVER : https://discord.gg/FUEHs7RCqz
+  YOUTUBE : https://www.youtube.com/channel/UCPbAvYWBgnYhliJa1BIrv0A
+ * **********************************************
+ *   Code by RTX GAMING
+ * **********************************************
+ */
