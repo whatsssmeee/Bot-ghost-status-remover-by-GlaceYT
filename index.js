@@ -2,11 +2,14 @@ const discord = require('discord.js');
 const { Client, Intents } = discord;
 require('dotenv').config();
 
-const intents = new Intents(32767);  // All privileged intents
-intents.add('GUILD_MEMBERS');       // Add GUILD_MEMBERS intent separately
-
 const bot = new Client({
-  intents: intents,
+  intents: [
+    Intents.FLAGS.GUILDS,
+    Intents.FLAGS.GUILD_MEMBERS,
+    Intents.FLAGS.GUILD_BANS,
+    Intents.FLAGS.GUILD_MESSAGES
+    // Add other intents as needed
+  ]
 });
 
 bot.on('ready', () => {
